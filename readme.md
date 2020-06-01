@@ -23,4 +23,11 @@ reduce가 불가능한 경우 shift하며 GOTO(상태, V<sub>T</sub>)의 집합 
 <u>1번 상태의 $는 항상 acc이다.</u>  
 FOLLOW는 해당 symbol 다음에 나오는 모든 Terminal Symbol의 set이다.  
 
-** 내일부터는 코드 작성 시작해야한다! **
+**<string>내일부터는 코드 작성 시작해야한다!</string>**  
+- MarkDown Language  
+header(제목) h1 ~ h6 '#'으로 표시 (예시: "###" h3)  
+bold 는 **string** 으로 표시  
+br대신 space 2칸으로 활용가능  
+"[링크 표시될 제목] (링크)"
+코드의 경우 ```로 코드 종류 명시 후 감싸주기  
+인용문의 경우 > 이용

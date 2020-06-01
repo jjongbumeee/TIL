@@ -20,7 +20,7 @@ GOTO(I<sub>0</sub>, symbol)의 경우 I<sub>0</sub>집합에서 symbol을 처리
 5. 구문 분석기 행동의 경우  
 reduce가 가능한(dot symbol이 마지막에 위치한 경우) reduce을 하며 E -> T인 경우 FOLLOW(E)의 항목들에 reduce작성하며 몇번 집합을 통해 reduce 되는지 표기한다.  
 reduce가 불가능한 경우 shift하며 GOTO(상태, V<sub>T</sub>)의 집합 번호를 같이 기재한다.  
-<u>1번 상태의 $는 항상 acc이다.</u>
+<u>1번 상태의 $는 항상 acc이다.</u>  
 FOLLOW는 해당 symbol 다음에 나오는 모든 Terminal Symbol의 set이다.  
 
 ** 내일부터는 코드 작성 시작해야한다! **

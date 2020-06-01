@@ -1,5 +1,3 @@
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
 # Today I Learned (TIL)
 ## Since 2020.06.01 by DanielJung
 ### 원칙 1 : 주 2회 이상은 알고리즘 관련된 학습을 진행 후 작성  
@@ -14,4 +12,4 @@ LR 구문분석방법으로는 SLR, CLR, LALR방법이 있다.
 SLR 구문분석
 SLR 구문분석은 LR(0) 항목과 FOLLOW를 이용하여 파싱표 작성 [파싱표 작성법 동영상](https://www.youtube.com/watch?v=ig-R03WwgLs)
 1. Augmented grammar 생성(S' -> S)
-2. LR(0) 항목 나열 시작부터 ㅁ
+2. LR(0) 항목 나열 시작부터 $$ 1 + 2 = 3$$

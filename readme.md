@@ -1,7 +1,7 @@
 # Today I Learned (TIL)
 ## Since 2020.06.01 by DanielJung
 ### 원칙 1 : 주 2회 이상은 알고리즘 관련된 학습을 진행 후 작성  
-### 2020.06.01 (Day 1)
+## 2020.06.01 (Day 1)
 - 컴파일러  
 LR 구문 분석  
 LL 구문 분석은 left-recursion 문제와 backtracking으로 인한 속도 문제로 인해 실제 컴파일러 사용하기엔 부적절
@@ -31,7 +31,67 @@ br대신 space 2칸으로 활용가능
 "[링크 표시될 제목] (링크)"
 코드의 경우 ```로 코드 종류 명시 후 감싸주기  
 인용문의 경우 > 이용
-### 2020.06.02 (Day 2)
+## 2020.06.02 (Day 2)
 - Dijkstra Algorithm  
 오랜만에 다익스트라 알고리즘 문제를 접하게 되었다. 작년에는 한참 종만북을 보며 연습했었는데, 아무런 공부없이 문제를 맞딱드리게 되니 머릿속이 하얘졌다.  
-리트머스 문제를 풀기 위해서 psuedo code를 보기도 하였으나 기존의 이용했던 코드와 달라 작성하기 힘들었다.  ~ 물론 문제가 잘못되기도 하였다. ~
+리트머스 문제를 풀기 위해서 psuedo code를 보기도 하였으나 기존의 이용했던 코드와 달라 작성하기 힘들었다.  
+~~ 물론 문제에 오류가 있어서 시간을 모두 사용했다. ~~  
+
+다익스트라가 나온김에 한번 대표적인 문제의 코드를 보자.  
+vector와 priority_queue를 이용해야 가장 효율적이다.
+```
+#include<iostream>
+#include<vector>
+#include<queue>
+#define INF 1e9
+using namespace std;
+ 
+int main()
+{
+    int V,E;
+    scanf("%d %d", &V ,&E); //노드의 갯수와 엣지의 갯수를 입력받습니다. 
+    int start;
+    scanf("%d",&start);        //시작점을 입력받습니다. 
+    vector<pair<int,int> > arr[V+1];
+    
+    for(int i=0;i<E;i++){
+        int from,to,val;
+        scanf("%d %d %d", &from , &to,&val); //그래프 상의 엣지들에 대한 정보를 입력받습니다. 
+        arr[from].push_back({to,val});
+    }
+    int dist[V+1];    //최단거리를 갱신해주는 배열입니다. 
+    fill(dist,dist+V+1,INF);    //먼저 무한대로 전부 초기화를 시켜둡니다. 
+    priority_queue<pair<int,int> > qu;     
+    
+    qu.push({0,start});    //우선순위 큐에 시작점을 넣어줍니다. 
+    dist[start]=0;    //시작점의 최단거리를 갱신합니다. 
+    
+    while(!qu.empty()){
+        int cost=-qu.top().first;    // cost는 다음 방문할 점의 dist값을 뜻합니다. 
+        int here=qu.top().second;     // here을 방문할 점의 번호를 뜻합니다 
+        
+        qu.pop();
+            
+        for(int i=0; i<arr[here].size(); i++){
+            int next=arr[here][i].first;
+            int nextcost=arr[here][i].second;
+            
+            if(dist[next] > dist[here] + nextcost){    
+                //현재 next에 저장된 dist의값보다 현재의 점을 거쳐서 갈 경우가 
+                // 거리가 더짧으면 갱신해 주고 큐에 넣습니다. 
+                dist[next]=dist[here]+nextcost;
+                qu.push({-dist[next],next});
+            }
+        }
+        
+    }
+    for(int i=1;i<=V;i++){
+        printf("%d\n", dist[i]);
+    }
+}
+ ```
+
+ - 컴파일러  
+ C로 작성된 first, follow 코드는 찾았으나,  
+  이를 C++로 수정해야하고 파일 입출력도 넣어야하지만 하지 못했다....  
+  내일은 제대로 집중해서 컴파일러에만 시간을 할애해야겠다.

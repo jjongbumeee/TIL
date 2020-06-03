@@ -39,7 +39,7 @@ br대신 space 2칸으로 활용가능
 
 다익스트라가 나온김에 한번 대표적인 문제의 코드를 보자.  
 vector와 priority_queue를 이용해야 가장 효율적이다.
-```
+```cpp
 #include<iostream>
 #include<vector>
 #include<queue>
@@ -95,3 +95,27 @@ int main()
  C로 작성된 first, follow 코드는 찾았으나,  
   이를 C++로 수정해야하고 파일 입출력도 넣어야하지만 하지 못했다....  
   내일은 제대로 집중해서 컴파일러에만 시간을 할애해야겠다.
+
+## 2020.06.03 (Day 3)
+오늘은 하루종일 컴파일러에 집중했다.
+- 컴파일러  
+파일입출력을 통해 문법을 입력받고, 주어진 문법의 V<sub>N</sub>의 First와 Follow를 계산하여 출력하는 작업을 하였다. 물론 First와 Follow는 처음부터 구현은 힘들어 github의 다른 코드를 참조하였다.  
+파일입출력은 ``ifstream``을 통해 작업하였으며, ``getline`` 을 사용하였다.  
+```cpp
+ifstream syntax;
+syntax.open("syntax.txt");
+if(syntax.is_open()) {
+    while(!syntax.eof()) {
+        syntax.getline(char[]name, maxlength); //주의할 점은 name은 char형만 가능
+    }
+}
+```
+또한 기존 코드에 처리되어있지 않은 2가지의 문법을 or로 구분하여 작성되어 있는 문법을 처리하였다.
+> **from** (ex. A ==> B || C)  
+> **to** (A ==> B) & (A == > C)
+
+위 문장은 2개의 문장으로 분할하여 production rule에 추가하였다.  
+SLR parser를 구현하기 위해서는 앞으로 ``CLOSURE``와 ``GOTO`` 함수 구현이 필요하다.  
+오늘은 증가문법 (augmented grammar)는 완성하였다.  
+현재 파서는 인덱스 구조로 되어있기 때문에 복잡한 문법은 처리하지 못한다. 특히나 터미널 심볼이 두 문자 이상으로 구성되어 있는 경우 처리하지 못하기 때문에 문제가 크다.  
+앞으로 해결해야할 문제이다.

@@ -119,3 +119,46 @@ SLR parser를 구현하기 위해서는 앞으로 ``CLOSURE``와 ``GOTO`` 함수
 오늘은 증가문법 (augmented grammar)는 완성하였다.  
 현재 파서는 인덱스 구조로 되어있기 때문에 복잡한 문법은 처리하지 못한다. 특히나 터미널 심볼이 두 문자 이상으로 구성되어 있는 경우 처리하지 못하기 때문에 문제가 크다.  
 앞으로 해결해야할 문제이다.
+
+## 2020.06.05 (Day 4)
+- OS / Main memory   
+Memory allocation method에 대해 알아보았다. 그 중 아래 3가지에 대해 자세히 알아보았다.  
+1. Contiguous Allocation
+1. Segmentation  
+1. Paging
+>주로 메모리 할당에 관련해서는 2가지 항목을 평가한다.  
+*** Utilization(활용도) & Performance(Address Translation 소요 시간) ***  
+
+``Contiguous``는 가장 효율적이지 못한 allocation policy이다.  
+연속적으로 무조건 할당해야하므로 Internal & External fragmentation이 매우 크다.  
+또한 swap이 발생한 경우 유일하게 뛰어난 Performance도 저하된다.<br>
+
+그렇기 때문에 나온 것이 ``Segmentation``이다. 이는 Logical Address Space를 분할해 메모리에 로드 할 수 있도록 한 것인데, 이러한 프로그래밍 방식을 개발자들이 이용하지 않아 사양됬다. 또한 Address Translation에 오랜 시간이 걸린다.  
+<br>
+다시 한번 개선된 것이 현재에도 쓰이는 ``Paging`` 기법이다.  
+그러나 해당 기법에는 문제점이 있다.  
+Page Table을 참조하기 위해 Memory에 2번 Access해야 하는 문제가 생긴다.  
+이는 TLB Cache를 이용하여 해결한다. TLB hit ratio가 충분히 보장되는 경우 성능 저하가 거의 발생하지 않고  
+Utilitzation은 page table을 hieraricial page table을 구성하여 높일 수 있다.  
+
+- OS / Virtual memory  
+
+Virtual Memory는 기존에 프로세스에서 요구하는 100%의 page에 frame을 할당해 관리하는 것이 아니라 일부 필요한 부분에 할당을 하여 ** utilitzation을 극대화 ** 할 수 있는 방법이다.  
+이를 위해서는 LAS와 PAS 사이에 Virtual Address Space를 이용한다.
+
+로드된 이외의 영역은 storage device인 backing store에 저장한다.  
+로드되지 않은 메모리 영역의 page를 요청하면 **page fault**가 발생하며 swap영역 또한 program image의 데이터를 가지고 온다.  물리 메모리가 부족한 경우 현재 잘 사용되지 않는 page를 골라(고르고 교체하는 작업을 수행) page replacement를 실시한다.
+
+page replacement policy는 demand paging(페이지가 필요한 경우 즉각 로드하는) 사용 시 ``Belady's Anomaly``를 볼 경우 중요하다는 것을 알 수 있다.  
+(크키가 커져도 page replace가 제대로 안되면 page fault 발생 횟수가 증가)  
+
+이를 해결하기 위해 LRU Approximation Algorithm을 이용한다.
+Enhanced Second-Chance Algorithm이 최신의 기술이다.
+
+> Take ordered pair (reference, modify) 
+>1. (0, 0) neither recently used not modified – best page to replace
+>2. (0, 1) not recently used but modified – not quite as good, must write out before replacement 
+>3. (1, 0) recently used but clean – probably will be used again soon
+>4. (1, 1) recently used and modified – probably will be used again soon and need to write out before replacement
+
+위 작업을 통해 circular queue를 이용해 문제를 해결한다.

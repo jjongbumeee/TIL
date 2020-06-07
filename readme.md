@@ -35,7 +35,7 @@ br대신 space 2칸으로 활용가능
 - Dijkstra Algorithm  
 오랜만에 다익스트라 알고리즘 문제를 접하게 되었다. 작년에는 한참 종만북을 보며 연습했었는데, 아무런 공부없이 문제를 맞딱드리게 되니 머릿속이 하얘졌다.  
 리트머스 문제를 풀기 위해서 psuedo code를 보기도 하였으나 기존의 이용했던 코드와 달라 작성하기 힘들었다.  
-~~ 물론 문제에 오류가 있어서 시간을 모두 사용했다. ~~  
+~~물론 문제에 오류가 있어서 시간을 모두 사용했다.~~  
 
 다익스트라가 나온김에 한번 대표적인 문제의 코드를 보자.  
 vector와 priority_queue를 이용해야 가장 효율적이다.
@@ -127,7 +127,7 @@ Memory allocation method에 대해 알아보았다. 그 중 아래 3가지에 �
 1. Segmentation  
 1. Paging
 >주로 메모리 할당에 관련해서는 2가지 항목을 평가한다.  
-*** Utilization(활용도) & Performance(Address Translation 소요 시간) ***  
+**Utilization(활용도) & Performance(Address Translation 소요 시간)**  
 
 ``Contiguous``는 가장 효율적이지 못한 allocation policy이다.  
 연속적으로 무조건 할당해야하므로 Internal & External fragmentation이 매우 크다.  
@@ -143,7 +143,7 @@ Utilitzation은 page table을 hieraricial page table을 구성하여 높일 수 
 
 - OS / Virtual memory  
 
-Virtual Memory는 기존에 프로세스에서 요구하는 100%의 page에 frame을 할당해 관리하는 것이 아니라 일부 필요한 부분에 할당을 하여 ** utilitzation을 극대화 ** 할 수 있는 방법이다.  
+Virtual Memory는 기존에 프로세스에서 요구하는 100%의 page에 frame을 할당해 관리하는 것이 아니라 일부 필요한 부분에 할당을 하여 **utilitzation을 극대화** 할 수 있는 방법이다.  
 이를 위해서는 LAS와 PAS 사이에 Virtual Address Space를 이용한다.
 
 로드된 이외의 영역은 storage device인 backing store에 저장한다.  
@@ -162,3 +162,97 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
 >4. (1, 1) recently used and modified – probably will be used again soon and need to write out before replacement
 
 위 작업을 통해 circular queue를 이용해 문제를 해결한다.
+
+## 2020.06.07 (Day 5)
+- Data Communication 정리  
+    1. Network Models  
+        >5 계층 인터넷 모델에선 **Transport : TCP / Network : IP**만 사용하면 전부 Interntet이다.  
+        
+        각 계층별 역할을 살펴보자  
+        - *물리 계층(Physical layer)* : 개별 비트를 인접 노드에 전달하는 역할, 선로의 물리적 특성과 전송방식을 다룸  
+        - *데이터 링크 계층(Data Link layer)* : 안정적인 Next-hop deilivery 역할을 함. 데이터를 Frame 단위로 전송하는 Framing, Physical Addressing(MAC 주소) 등등. 현재는 주로 Ethernet을 기반으로 함  
+        - *네트워크 계층(Network layer)* : Source-to-Destination 전송을 책임. 서로 다른 네트워크 간 전송도 책임(Routing). 현재는 주로 IP 프로토콜 이용.
+        - *전송 계층(Transport layer)* : Process-to-Process delivery를 책임. 주로 port addressing 작업에 이용
+        - *응용 계층(Application layer)* : 어떠한 서비스의 어떤 프로토콜을 이용해 전송할 것인지 결정. 사용자에게 서비스를 제공.
+    
+    1. Signals & Transmission  
+        data가 전송되기 위해선 전자기적 신호로 변환이 되어야한다.  
+        데이터 통신에서는 주로 **주기적 아날로그 신호(periodic analog signal)과 비주기적 디지털 신호(aperiodic digital signal)**을 사용한다.  <br><br>
+        - Analog Signal  
+            *Fourier transform* : **any composite signal => a combination of simple sine waves** with different freq, phase, and amplitude  
+            ex) Square wave = 무한히 많은 Sine wave를 반복하면 만들어낼 수 있다.  
+            그러나 medium에 따라 일부 주파수만 통과시키면 변형이 될 수 있다.
+
+            **BandWidth** : medium이 정상적으로(출력의 half 이상 손실 없이) 통과시켜줄 수 있는 주파수 범위 (highest - lowest)
+            
+            따라서 Analog Signal을 확인할 때는 아래 2가지를 확인해야함
+            > 1. Medium Bandwidth가 전송하려는 Signal의 Bandwidth보다 크거나 같은지
+            > 2. Medium이 통과시키는 주파수가 Signal의 주파수 범위에 맞는지  
+        - Digital Signal  
+            Analog에서의 period = Bit interval, freq = Bit rate  <br>
+            Digital Signal은 기본적으로 infinite frequency를 가짐  
+            따라서 Digital Signal 원본을 송수신하기 위해선 Wide-Band medium이 필요하지만 가격이 비쌈  
+            ``Nyquist therom``과 ``Shannon capacity``에 따르면 band limited medium에도 전송이 가능하다.
+
+            >Nyquist Therom  
+            **Medium BandWidth >= (number of bps) / 2**  
+            단 1비트가 아닌 n비트를 신호 하나에 실어 보낼 경우 bps는 증가가능  
+
+        - Analog transmission vs. Digital transmission  
+            ![low-pass & band-pass description](https://www.researchgate.net/profile/Magid_Hallab/publication/315801831/figure/fig3/AS:484776042864643@1492591023610/The-four-common-filters-a-Low-pass-filter-passes-signals-with-a-frequency-lower-than.png "low-pass & band-pass")
+            - low-pass channel : 특정 freq. 0 이상 f 이하의 bandwidth를 가지는 channel
+            - band-pass channel : 특정 freq f<sub>1</sub> ~ f<sub>2</sub>의 bandwidth를 가지는 channel    
+
+        **Digital transmission은** Digital signal을 전송하므로 이론적으로 0 ~ infinity의 대역폭(bandwidth)가 필요하므로 **low-pass channel이 필요함**  
+
+        반면에 **Analog Transmission은 low 또는 band-pass에서 사용가능** 또한 **B/W 대역을 쪼갤 수 있음**  
+
+        - Noiseless channel => ``Nyquist Therom``  
+        > Bitrate in bps = 2 * Bandwidth * log<sub>2</sub>L  
+        L : numbers of signal levels  
+
+        - Noisy channel => ``Shannon capcity``  
+        > *Capacity* in bps  = bandwidth * log<sub>2</sub>(1+SNR)  
+        SNR : Power<sub>signal</sub> / Power<sub>noise</sub>
+
+        **Channel Capacity보다 data rate를 높게 설정하는 것은 불가능하다.**
+
+    1. Transmission Impairment(손상)  
+        - Attentuation(감쇠) : medium의 저항으로 인해 손실되는 에너지 / amplifier를 통해 해결  
+        dB = 10log<sub>10</sub>(P<sub>2</sub>/P<sub>1</sub>)  
+        +이면 에너지 증폭, -이면 에너지 감쇠 / 단순 덧셈, 뺄셈 가능
+        - Distortion(왜곡) : 각각의 signal은 전파 지연 속도가 다르기 때문에 신호가 왜곡될 수 있음
+        - Noise(잡음) : 온도, 충격, 누화(crosstalk), 전기적 충격에 의해 신호가 손상될 수 있음  
+
+    1. Digital Transmission  
+        binary data => digital signal 변환하는 과정을 Line Coding이라고 함  
+        - Signal Level & Data Level
+            - Signal Level : signal에서 구분할 수 있는 단계 수
+            - Data Level : data에서 구분할 수 있는 단계 수
+        - Pulse rate & Bit rate
+            - Pulse : symbol 하나를 전송하는데 걸리는 최소 시간
+            - pulse rate : 초당 pulse의 전송 개수
+            - bit rate = pulse rate * log<sub>2</sub>L  
+            L : number of data levels
+        - DC components : Amplitude가 순간적으로 0이 되는 순간을 신호로서 표현할 수 signal  
+        추가 에너지를 필요로 하기 때문에 구현이 쉽지 않음
+
+        - Self-syncrhonization(비동기)  
+        ![Self-sync](https://www.rfwireless-world.com/images/RZ-vs-NRZ-vs-manchester-code.jpg)
+            - Unipolar encoding : 1개의 voltage level을 이용하여 간단하지만, dc componet 문제와 동기화할 수 없다는 점이 단점이다.
+            - Polar encoding : 2개의 voltage level(+/-, signal level)을 써 dc component는 없지만, 동기화 문제 존재
+                - NRZ-L : data 0은 positive voltage, 1은 negative voltage를 송수신  
+                반복된 0 또는 1 data는 동기화 문제를 유발시킨다.
+                - NRZ-I : data 0은 기존 전압 유지, 1은 전압 반대로 전환  
+                NRZ-L보다 나은 동기화 성능
+                - RZ : data에 맞는 신호를 보낸 후 0 voltage로 항상 전환하여 syncronization을 실시  
+                단, 잦은 phase 변화로 frequncy 증가 -> 많은 bandwidth 소모 
+                - Manchester : RZ에서 0 voltage 대신 중간 voltage transition을 이용해 b/w 절약
+                - Differential Manchester : Manchester 방식에 NRZ-I 방식을 합함. data가 0이면 transition, 1이면 no transition이다.
+            - Bipolar encoding : 3개의 Signal Level을 가짐
+                - AMI : 1에서만 signal inverse  
+                NRZ-L과 같은 단점 존재
+                - BnZS : 다르게 인코딩한다... ~~자세한 설명은 없었음~~
+            - 2B1Q : 2개의 비트, 4개의 signal level
+            - MLT-3 : NRZ-I와 동일하지만, 3개의 signal level 사용
+        - Block Coding

@@ -255,4 +255,10 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
                 - BnZS : 다르게 인코딩한다... ~~자세한 설명은 없었음~~
             - 2B1Q : 2개의 비트, 4개의 signal level
             - MLT-3 : NRZ-I와 동일하지만, 3개의 signal level 사용
-        - Block Coding
+        - Block Coding : 전송 비트를 나눠서 블록 단위로 syncronization 문제 발생하지 않는 비트로 매핑
+            - 4B/5B : 4bit를 5bit로 인코딩, 앞에는 0이 최대 1개, 뒤에는 0이 최대 2개만 중복함으로서 3개 이상의 0은 연속되지 않도록 함
+            - 8B/10B : 8bit를 10bit로
+            - 8B/6T : 8bit를 3개의 signal level을 가진 6개의 signal 3<sup>6</sup>로
+        - **Analog data를 Digital 전송하기 위해서는 data sampling이 필요**
+        - 이후 내용은 내일 이어서...
+        

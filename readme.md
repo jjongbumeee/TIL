@@ -261,4 +261,41 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             - 8B/6T : 8bit를 3개의 signal level을 가진 6개의 signal 3<sup>6</sup>로
         - **Analog data를 Digital 전송하기 위해서는 data sampling이 필요**
         - 이후 내용은 내일 이어서...
-        
+## 2020.06.08 (Day 6)
+- data communication 정리 (cont.)  
+    1. digital transmission
+    - sampling
+        - PAM(Pulse Amplitude Modulation) : analog data의 파형을 그대로 digital로 따라한 것
+        - PCM(Pulse Code Modulation)  
+            PAM => **Quantization** => binary encoding => line coding  
+            <u>**sampling rate는 원래 신호의 최대 주파수의 2배 이상으로 해야한다!**</u>  
+            band-pass signal을 low-pass signal로 변환하여 sampling 할 경우 signal bandwidth의 2배를 sampling rate로 잡으면 된다.  
+            각 sample 당 필요한 bit 수는 ceiling(log<sub>2</sub>N)개 이다.  
+            따라서 bit rate = sampling rate * number of bits per sample
+    - Transmission mode
+        - Parallel
+            : 고속이나 선로 부담이 커 비용이 비쌈, 주로 짧은 거리에 이용  
+        - Serial 
+            : 동기시스템과 비동기시스템으로 나뉜다. 
+            - 비동기 시스템은 신호의 시기나 순서가 중요하지 않은 시스템. 시작비트, 종료비트로 바이트 단위를 구분해 전송. 저렴하며 효율적이지만 느리다.
+            - 동기 시스템은 바이트 단위 구분 없이 전송한다. 따라서 바이트 단위의 순서가 중요하다.  
+
+    2. Analog transmission
+        - modulation : digital/analog data -> band-pass analog signal
+        - baud : signal unit / baud rate : # of signal units per second
+        - carrier signal : 기준 주파수 (+ 유저의 데이터를 추가하여 전송)
+        - ASK(Amplitude Shift Keying)
+        : 단순히 신호의 세기를 변조해 데이터의 0/1을 표시하는 방법  
+        b/w = baud rate와 동일한 만큼 필요(f-N<sub>baud</sub>/2 ~ f+N<sub>baud</sub>/2)  
+        ASK에선 baud rate와 bit rate가 동일  
+        단순하지만 noise에 약함
+        ![ask_ex5](./image/ASK_ex4.png)
+        ASK full-duplex 문제 참고.
+        - FSK(Frequency Shift Keying)
+        : 2개의 주파수를 이용해 주파수에 각 0, 1을 할당하여 변조하는 방법  
+        FSK에 특별히 적합한 주파수가 존재  
+        b/w = f<sub>c1</sub> - f<sub>c2</sub> + N<sub>baud</sub>(baud-rate)  
+        FSK에서도 baud rate와 bit rate가 동일
+        - PSK(Phase Shift Keying)
+
+

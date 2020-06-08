@@ -281,9 +281,10 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             - 동기 시스템은 바이트 단위 구분 없이 전송한다. 따라서 바이트 단위의 순서가 중요하다.  
 
     2. Analog transmission
-        - modulation : digital/analog data -> band-pass analog signal
-        - baud : signal unit / baud rate : # of signal units per second
-        - carrier signal : 기준 주파수 (+ 유저의 데이터를 추가하여 전송)
+        - Terminology
+            - modulation : digital/analog data -> band-pass analog signal
+            - baud : signal unit / baud rate : # of signal units per second
+            - carrier signal : 기준 주파수 (+ 유저의 데이터를 추가하여 전송)
         - ASK(Amplitude Shift Keying)
         : 단순히 신호의 세기를 변조해 데이터의 0/1을 표시하는 방법  
         b/w = baud rate와 동일한 만큼 필요(f-N<sub>baud</sub>/2 ~ f+N<sub>baud</sub>/2)  
@@ -291,11 +292,25 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
         단순하지만 noise에 약함
         ![ask_ex5](./image/ASK_ex4.png)
         ASK full-duplex 문제 참고.
+
         - FSK(Frequency Shift Keying)
         : 2개의 주파수를 이용해 주파수에 각 0, 1을 할당하여 변조하는 방법  
         FSK에 특별히 적합한 주파수가 존재  
         b/w = f<sub>c1</sub> - f<sub>c2</sub> + N<sub>baud</sub>(baud-rate)  
         FSK에서도 baud rate와 bit rate가 동일
+
         - PSK(Phase Shift Keying)
+        : signal의 phase에 따라 데이터를 변조하는 방법  
+        Minimum b/w = N<sub>baud</sub>  
+        PSK의 경우 baud rate와 bit rate가 동일하지 않을수도 있음으로 유의 **(2<sup>1baud to bit</sup>-PSK)**  
+
+        - QAM(Quadrature Amplitude Modulation)  
+        : ASK + PSK 방식  
+        PSK와 동일하게  **(2<sup>1baud to bit</sup>-QAM)**으로 표기
+
+        - Modulation of analog signal
+            1. AM : total required b/w = audio signal * 2
+            2. FM : total required b/w = audio signal * 10
+        
 
 

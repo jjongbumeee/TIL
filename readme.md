@@ -313,4 +313,53 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             2. FM : total required b/w = audio signal * 10
         
 
-
+## 2020.06.18 (Day 7) : PL summary
+1. chapter 1 Preliminaries
+    - Programming Domains
+        - Scientific application : Fotran - 많은 수의 부동소수점 계산과 배열 활용
+        - Business application : COBOL - 레포트 작성, 십진수와 문자 사용
+        - Artificial application : LISP - 숫자 조작보다는 기호를 이용, 링크드 리스트의 활용
+        - System programming : C - 지속적 사용으로 인한 효율성 극대화 필요
+        - Web software : HTML, PHP, Java - 호환성 필요
+    - Language Evaluation criteria
+        - ``Readability`` : 가독성, 간단하고 직교성(적은 수의 구조체를 가지고 프로그래밍)을 가지는 지, 적절한 data types를 가지고 있는지
+        - ``Writability`` : 표현성 (가독성과 마찬가지로 약간 주관적), 추상화에 대한 지원이 있는지, 표현이 얼마나 편리한지
+        - ``Reliability`` : 신뢰성, language가 **typesafe** 한지 여부가 대표적, exception handling과 aliasing 지원 여부
+        - ``Cost`` : 컴파일러 실행 시간 + 실행 속도 + 유지보수 비용 + ... 다양한 시간, 비용 계산
+    - Language Design : *사람이 변화할 때, 컴퓨터 구조가 변화할 때, 함께 변화한다.*
+        - 대부분의 컴퓨터 언어의 구조는 폰 노이만 구조의 영향을 크게 받음
+        - 명령형 언어의 기반 : 변수 => 메모리 셀 매핑, assignment statement, iteration에 강함
+    - Programming methodology
+        - 1950s ~ early 1960s : H/W인 기기의 효율성을 중시 - 어셈블리어
+        - late 1960s : 사람의 효율성을 점차 중시하게 되며 가독성, 더 나은 control structure 를 원하게 됨. 구조화된 프로그래밍, top-down 방식의 디자인의 등장
+        - late 1970s: data-oreiented 로 변화를 시도하였으나 실패
+        - Middle 1980s : object-oriented   
+        **data abstraction + inheritance + polymorphism**
+    - language categories
+        1. Imperative - 폰 노이만 구조 기반 : C, Java, Perl, JS, C++...
+        1. Functional - lambda function을 이용한 구조 : LISP, Scheme
+        1. Logic - expert system 개발에 이용, 현재 사용되지 않음 : prolog
+        1. Markup & hybrid - 다른 프로그램을 지원하기 위한 language : JSTL, XSLT
+    - Implementaion methods
+        - Compilation : 컴파일 방식 (속도 ↑, 개발기간 ↑)
+        - Pure Interpretation : 인터프리터 방식 (속도 ↓, 개발기간 ↓)
+        - Hybrid 방식 : compilation + interpretation
+    - Compilation : **Slow translation, Fast execution**
+        - Load module : 운영체제나 기능이 미미한 경우 system code와 user code를 한번에 load함
+        ![Program execution flow example](./image/Compile-Linking-Loading-Exec.png)
+    - Von Neumann Bottleneck : CPU와 Memory 사이의 bottleneck 현상
+    - Pure Interpretation : **Easier implementation, Slower execution**  
+    No translation, Often requires more space
+    - Hybrid Implementation system : compilation + pure interpretation
+    - Just-in-Time Implementation System  
+    Java -> bytecode 는 interpretation 방식으로 즉시 변환하고, bytecode -> machine language는 호출 시 컴파일  
+    1회 컴파일, 실행 시 해당 machine code는 저장(이후의 호출 시 이용) 
+2. chapter 3 Syntax and Semantics
+    - Syntax : expression, statement의 구조나 형태
+    - Semantics : Syntax가 가지는 실질적인 의미
+    - Lexeme & Token ![lexeme & token](./image/lexeme&token.png)
+    - BNF 문법은 Context-Free grammar를 전부 표현 가능  
+        LHS : non-terminal => RHS : terminal & non-terminal  
+        non-terminal은 <> 안에 둘러쌓여서 표현  
+        ex) <ident_list> -> ident | ident, <ident_list>  
+        sentential form : terminal symbol로만 이루어진 sentence가 되기 이전까지의 과정

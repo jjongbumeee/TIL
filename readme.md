@@ -469,4 +469,23 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
         - Scope != Lifetime (ex. `static` variable)
         - Named Constant : 1회 storage binding만 가능한 형태 (가독성이 뛰어나짐)
             - dynamic bound : expression 전체가 RHS에 가능
-            - statically bound : 숫자 & named constant로 구성된 RHS가 가능
+            - statically bound : 숫자 & named constant로 구성된 RHS가 가능  
+
+5. Chapter 6. Data Types <sup>1.</sup>data representation <sup>2.</sup>operation
+    - Primitive Data Types (기본 데이터 타입)
+        - 몇몇은 하드웨어의 반영결과이다.(ex. integer types)
+        - 다른 structered type를 정의하는데 사용
+        - Integer
+            - representation : H/W mapping 상태(표현과 저장방식 동일)
+            - operation : Two's complement
+        - Floating point
+            - 지수부(exponent)와 가수부(fraction) 부분으로 나눠서 사용
+        - String
+            - pattern matching 연산(Perl 지원)
+            - C/C++에서는 non-primitive / Java, C#, Ruby, Perl.. 등 대부분에서 primitive 한 data
+            - 특히, Perl, JS, Ruby, PHP에서는 regular expression을 지원
+            - 문자열의 길이 지정
+                - static : 정적
+                - limited dynamic : static 방식이나 내부적으로 복사 작업을 통해 유지
+                - dynamic : 완전히 동적인 방식으로 길이에 대한 제한이 전혀 없음
+                

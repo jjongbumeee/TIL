@@ -358,8 +358,115 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
     - Syntax : expression, statement의 구조나 형태
     - Semantics : Syntax가 가지는 실질적인 의미
     - Lexeme & Token ![lexeme & token](./image/lexeme&token.png)
-    - BNF 문법은 Context-Free grammar를 전부 표현 가능  
-        LHS : non-terminal => RHS : terminal & non-terminal  
-        non-terminal은 <> 안에 둘러쌓여서 표현  
-        ex) <ident_list> -> ident | ident, <ident_list>  
-        sentential form : terminal symbol로만 이루어진 sentence가 되기 이전까지의 과정
+
+## 2020.06.19 (Day 8) : PL Summary(cont.)
+- BNF 문법은 Context-Free grammar를 전부 표현 가능  
+    LHS : non-terminal => RHS : terminal & non-terminal  
+    non-terminal은 <> 안에 둘러쌓여서 표현  
+    ex) <ident_list> -> ident | ident, <ident_list>  
+    sentential form : terminal symbol로만 이루어진 sentence가 되기 이전까지의 과정
+    - 같은 문법에 대해 다른 parse tree가 발생하면 모호한(ambiguous)한 문법
+    - 따라서 우선순위(precedence)와 결합법칙(associativity)를 이용
+    - 우선순위를 통한 분리방법
+        1. 우선순위가 낮은 연산자가 먼저 나오도록 한다.
+        1.  | <term> 을 이용해 보다 높은 우선순위의 연산자를 재 기술
+        1. <term> -> 높은 순위 연산자 기술
+- **EBNF 표기법**
+    > "[ ]"기호는 생략가능한 부분  
+    > "(+/-)" 와 같은 기호는 기호들 중 택해야 함  
+    > "{ }" 는 0회 이상 반복되는 부분(생략도 가능) 
+![EBNF example](./image/EBNFexample.png)
+
+3. Chapter 4 Lexical & Syntax analysis
+    - Regular grammar => Regualr expression => Finite-state machine(FSM)
+    - Context-free grammar => BNF => push-down automata
+
+4. Chapter 5 Names, Bindings, Scopes
+    - *메모리 주소에 대한 언어에서의 추상화 방식은 **변수***를 이용하는 것이다.
+    - 6가지 sextuple로 변수의 특성을 설명할 수 있다.
+    1. Names : 변수의 특성 중 근본적인 속성 한가지 이다. 함수, 인자와 연관되어있음
+        - 주요 디자인 이슈 : **Case sensitive(대소문자 구별), reserved words, keywords**
+        - 형태 : Camel notation을 많이 사용(ex. ScoreValue) 앞글자를 대문자로
+        - Case-sensitivity / Special words : 필요는 하나 너무 많으면 문제
+    1. Address : *aliases*는 같은 메모리 주소를 가르키지만 다른 이름을 가진 별칭
+    1. Type : 변수 값의 범위와 연산
+    1. Value : l-value 는 address, r-value는 value를 의미
+    1. Lifetime
+        > Binding : entity와 attribute 사이의 연결
+        - *binding이 발생하는 시간에 따라 Static, Dynamic binding이 존재*
+        - <u>언어 디자인, 구현, 컴파일 타임</u>에 바인딩 되어 있는 것을 **Static binding**
+        - <u>프로그램 로드 시, 런타임</u>에 바인딩 되는 것을 **Dynamic binding**
+            ![binding time](./image/bindingtime.png)
+        - Static Binding  
+        <sup>1</sup>실행(runtime) 이전에 바인딩이 완료되며, <sup>2</sup>실행되는 동안 바인딩이 변경되지 않음 
+        - Dynamic Binding  
+        <sup>1</sup>Compile time 이후에 바인딩되거나, <sup>2</sup>프로그램 runtime에 binding이 변경됨
+        - Type binding : 변수를 사용하기 이전에 필수적으로 data type에 대한 binding이 되어있어야한다.
+            - type 지정 방법
+                - static type binding : 선언 시 type이 지정됨
+                    - explicit(명시적) 방법 : data type을 직접 명시함(ex. int, char)
+                    - implicit(묵시적 방법)
+                        - naming convention : type별 변수 이름의 규칙이 지정되어있음
+                        - context : 문맥을 보고 compiler가 data type을 유추
+                - dynamic type binding : 할당 시 binding
+                    - 변수에는 특별히 지정된 data type이 있는 것이 아님
+                    - 선언 시 상황에 맞게 매핑됨
+                    - *단점으로는 type checking이 불가능하고, H/W resource를 많이 차지*
+
+        - Storage bindings & **Lifetime**
+            - 전체적인 속도 : static < heap = stack
+            - Static
+                - bind storage before execution
+                - 프로그램 <u>실행 동안에는 계속 같은 공간에 bound</u>
+            - Stack-dynamic
+                - variable이 declare 될 때 stack에 할당
+                - 몇몇 언어는 subprogram의 처음이 아니여도 declare 가능
+                - 간혹 성능 최적화를 위해 변수 선언이 subprogram 처음으로 이동하기도 하지만, 무조건적으로 올려서는 안됨
+                - 장점
+                    1. **recursion이 가능하다.** (매우 큰 장점)
+                - 단점
+                    1. *allocation과 deallocation에 overhead가 발생한다.(속도 ↓)*
+                    1. subprogram이 histoy sensitive하지 못하다.
+                    1. indirect addressing으로 인해 reference가 비효율적이다.
+            - explicit heap-dynamic
+                - <u>명시적으로</u> 개발자가 연산자, 시스템 콜 호출을 통해 **heap영역**에 데이터를 생성
+                - 장점 : 동적 공간 할당과 관리를 제공해준다.
+                - 단점
+                    1. pointer와 reference를 통해 관리하는데 어려움이 발생
+                    1. 변수의 reference로 인한 비용이 든다. 
+                    1. storage management를 구현하기 위한 복잡성이 증가한다.
+            - implicit heap-dynamic
+                - assignment statement를 만나는 순간 allocation과 deallocation이 동시에 일어난다.
+                - 이전에 해당 변수가 어떠한 type이였는지는 관여하지 않는다.
+                - 장점 : 가장 높은 flexibility 제공
+                - 단점
+                    1. dynamic attributes를 유지하기 위한 runtime overhead 발생 (속도 ↓)
+                    1. error detection이 불가능하다. (realiability ↓)
+    1. Scope
+        - local variable : program unit내에 선언된 변수
+        - nonlocal variable : program unit내에서 참조할 수는 있으나 외부에서 선언된 변수
+        - Global variable : nonlocal variable중에 하나  
+
+        - **Static scope** : <u>compile time에 nonlocal 변수의 reference 위치를 결정할 수 있음</u>
+            - static scoped language
+            - subprogram이 nested가 가능한 경우 : 실행속도 ↓, 제약 없음
+            - subprogram이 nested가 불가능한 경우 : 실행속도 ↑, 제약 존재
+            - 호출 스택이 아닌 코드만 보고 가장 가까운 static ancestor를 찾아 참조한다.
+            ![static-scope](./image/staticScope.png) ***이 그림 꼭 확인하기!!***
+            - 같은 이름을 가질 경우 더 가까운 변수가 선택된다.
+            - 대부분의 functional language는 `let`을 이용해 imperative language의 block를 의미한다.
+            - C99, C++, Java, C#은 선언 시점부터 block의 끝까지 변수를 이용할 수 있다.
+            - Global scope (global variables)
+                - declaration : function prototype
+                - definition : attribute and storage
+                - C/C++ 에서는 `extern`을 이용해 외부의 전역변수를 이용 
+                - PHP 에서는 그림 참조 ![PHP-example](./image/phpExample.png)
+                - Python 에서 read는 가능, write는 `extern`과 마찬가지로 `global` 사용해서 선언해줘야 가능 (전방참조 주의!)
+        - ***Static scope 방식은 대부분의 경우에 잘 작동하나, 구현시 오버헤드가 크다.(enclosed scope)***
+        - ***Dynamic scope : nonlocal 변수의 reference 위치를 코드로는 알 수 없고 실행시 call-chain을 통해 알게 됨(all active subprogram)***  
+
+        <u>**Static-scoped language와 Dynamic-scoped language의 차이점 매우 중요!**</u>
+        - Scope != Lifetime (ex. `static` variable)
+        - Named Constant : 1회 storage binding만 가능한 형태 (가독성이 뛰어나짐)
+            - dynamic bound : expression 전체가 RHS에 가능
+            - statically bound : 숫자 & named constant로 구성된 RHS가 가능

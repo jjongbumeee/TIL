@@ -586,3 +586,24 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
     - C++에서는 reference 지정후 변경 불가능
     - Java 에서는 가능
     - C#에서는 2가지 type 가능
+- Heap management
+    - Reference counter
+        - 각 메모리셀에 자신을 가르키고 있는 포인터의 수를 저장
+        - 이 숫자가 0이 될 경우 메모리 해제
+        - 단점 : 추가적인 메모리 공간 필요, 수행시간 증가
+        - 장점 : 점차적으로 메모리 공간이 증가, 딜레이가 없음
+    - Mark-sweep
+    ![markandsweep](./image/mark&sweep.png)
+        - pointer를 따라가 만나지 않는 메모리셀 부분은 해제
+        - 메모리가 부족할 때만 실행하므로 delay가 존재
+- Type checking : operator의 operand로서 compatible type인지 확인하는 작업
+    - *compatible type* : 언어 특성으로서 operator가 처리할 수 있는 합법적인 연산자인지 확인, 자동으로 형변환으로 처리가 가능한지 여부
+    - 자동으로 compatible type으로 형변환 되는 것을 **coercion**이라고 한다.
+    - coercion이 불가능한 경우 type casting이 필요
+    - type binding이 전부 static 한 경우 type checking도 전부 static하다. dynamic이면 type checking도 dynamic하다.
+    - *strongly typed* language의 경우 모든 type error를 체크할 수 있다.
+    - **Coercion 이 많아지면 많아질수록 strong typing은 약화된다**
+    - Name type equivalence = Type의 Name이 같아야 type equivalence하다.
+        - 구현하기 쉽지만, 사용이 제한적이다.
+    - Structure type equivalence = Type의 Name 동일 유무와 상관없이 구조가 동일하면 compatible type이다.
+        - 코드 작성이 자유롭지만, 구현이 어렵고 동일하다는 기준이 모호하다.

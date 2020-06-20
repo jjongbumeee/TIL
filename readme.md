@@ -488,4 +488,101 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
                 - static : 정적
                 - limited dynamic : static 방식이나 내부적으로 복사 작업을 통해 유지
                 - dynamic : 완전히 동적인 방식으로 길이에 대한 제한이 전혀 없음
-                
+
+## 2020.06.20 (Day 9)
+- Enumeration Types
+    - 주요 디자인 이슈
+        - 서로 다른 enum type에서 같은 이름을 사용할 수 있느냐?
+        - enum value가 정수에 매핑되느냐?
+        - 열거형으로 작성하도록 제한된 유형이 있느냐?
+        - 코드의 **가독성과 신뢰성이 높아짐**, 그러나 코드 작성은 어려워짐(길어지고, 지루함)
+- Array types
+    - homogeneous(동일)한 여러개의 데이터를 집적시켜 놓은 형태
+    - 주요 디자인 이슈
+        - array의 index(subscript)에 적절한 타입은 무엇인가
+        - subscript expression의 range check를 실시하느냐
+    - Array indexing
+        - 몇몇 언어에서는 괄호(parentheses)를 이용
+        - 대부분은 bracket `[]`을 이용
+        - Ada : subscript type으로 enumeration type을 사용
+        - Java, ML, C#은 range check 진행
+        - Perl의 경우 독특
+        ```pl
+            @signs = (0, 1, 2 ,3, 4); // 선언
+            $signs[2]; // 3번째 원소 접근
+            $signs[-2]; // $signs[3]과 동일
+        ```
+        - lower bound(인덱스 시작값)은 지정할 수 있는 경우도 있음  
+    - Array categories
+        - static array : data segment에 array 할당 / subscript range와 storage 할당이 static하게 이루어짐
+        - *fixed stack-dynamic array* : stack segment에 고정 크기로 할당 /  
+            <u>subscript range는 static하게, array storage allocation은 execution time에 **stack**에 할당</u>
+        - *fixed heap-dynamic array* : heap segment에 고정 크기로 할당 /  
+        <u>fixed stack-dynamic array와 bound time은 동일하나, **heap**에 할당</u>
+        - ***heap-dynamic*** : heap segment에 가변 크기로 할당 /  
+        <sup>1</sup>subscript range와 storage allocation 모두 execution time에 발생하고,  
+        <sup>2</sup>이를 프로그램 수행 중 변경이 가능하다.
+            - 프로그램 유연성이 높아지나 속도는 할당과 해제로 인한 성능 저하
+    - JS의 경우 array가 sparse 할 수 있으며, 이러한 경우 배열 내에서도 nonexist element가 존재
+    - Array initialization & operation
+    - Rectangular array : 직사각형 형태 `[N][N]` array
+    - jagged array : 각각 길이가 다른 배열들의 배열  `[N][M]` array (N != M) 
+    - Row major, Column major : 행과 열 중 어떤것을 메모리 인접하여 저장할 것인지
+    - 다차원의 배열의 위치 : `address of a(row의 lower bound, column의 lower bound) + ((i - 1) * n) + (j - 1) * element size`
+- Associative arrays
+    - (key : value) 쌍으로 이루어진 순서가 없는 data elements의 collection
+    - Perl : `%hi_temps = ("Mon" => 77, "Tue" => 79, "Wed" => 65, ...);`  
+    ```pl
+    $hi_temps{"Wed"} = 83;
+    delete $hi_temps{"Tue"};
+    ```
+- Record type : hecterogeneous(서로 다른) data elements를 가짐  
+- tuple types : Record type과 비슷하나, element 별 name이 존재하지 않음
+    - immutable -> 한번 선언 후에는 값을 바꿀 수 없음
+    - tuple을 지원하지 않는 C에서는 반환값을 2개 주려면 어떻게 코딩하는지 알아둘것
+        1. struct를 반환하는 방법
+        1. pointer를 이용해 반환하는 방법
+- list types : tuple과 동일하나 mutable함
+    - Python 에서는 `[]`로 List를 표현
+    - Python list comprehension : 식으로 표현하여 List 연산
+    ```py
+        [x * x for x in range(6) if x % 3 == 0] // result : [0, 9, 36];
+    ```
+- Union types : 하나의 메모리 공간안에 여러개의 변수를 넣어 사용
+    - *Free union* vs. *Discriminant*
+        - *Free union* : type checking 없음 -> unsafe
+        - *Discriminant union* : type checking 있음 -> safe, but slow
+- Pointer(초기값 필요없음) and Reference(초기값 필요) types
+    - range of values : *memory address + nil*
+    - Operation
+        - assignment : set a pointer
+        - dereferencing : explicit & implicit 방식
+    - **problems**
+        1. <u>Dangling pointers</u> -> danger
+            - 없는 변수(이미 해제된)의 메모리 참조
+            - 해결방법
+            ![dangling-pointer](./image/dangling.png)
+                > Tombstone 방법  
+                    - 모든 pointer들은 기본적으로 tombstone이라는 pointer를 참조  
+                    - 만약 해당 변수가 해제되었다면 tombstone에 RIP을 명시한다.  
+                    - RIP처리된 변수는 접근할 수 없도록 한다.  
+
+                > Locks-and-keys 방법  
+                    - 변수 할당 시 pointer와 heap variable에 각각 key와 lock 값을 추가한다.  
+                    - 기본적으로 변수가 할당이 된 경우 pointer의 key값과 lock 값은 동일하다.  
+                    - lock == key 인 경우에만 변수 접근 가능
+                    - 변수 해제 시 lock 값을 초기화하여, 접근을 차단
+        1. Lost heap-dynamic variable
+            - heap영역의 동적할당된 변수의 주소를 잃어버림
+            - memory leakage 발생
+    - usage in C / C++
+        ```c
+        int a = 10;
+        void* p = &a;
+        *p; // error, void pointer can't de-reference
+        *(int *)p; //ok
+        ```
+- Reference type
+    - C++에서는 reference 지정후 변경 불가능
+    - Java 에서는 가능
+    - C#에서는 2가지 type 가능

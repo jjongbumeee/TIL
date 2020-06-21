@@ -548,6 +548,7 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
     ```py
         [x * x for x in range(6) if x % 3 == 0] // result : [0, 9, 36];
     ```
+    - '(A B C) 이면 List type (A B C)는 A라는 함수를 B, C라는 인자로 호출
 - Union types : 하나의 메모리 공간안에 여러개의 변수를 넣어 사용
     - *Free union* vs. *Discriminant*
         - *Free union* : type checking 없음 -> unsafe
@@ -610,9 +611,55 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
 
 ## 2020.06.21 (Day 10)
 6. Chapter 7. Expression and Assignment statements
-    - Expression : 프로그래밍 언어에서 근본적인 계산 의미를 표현
+    - Expression : 프로그래밍 언어에서 기본적인 계산 단위를 표현
         - order of operator & operand evaluation에 대해 이해해야 한다.
         - 우선순위와 결합법칙
         - *대부분 피연산자의 계산 우선순위는 지정되어 있지 않으며, 구현에 따라 다름*
-        - 명령형 언어의 본질은 assignment statement로 부터 시작된다.
-            - 
+        - 명령형 언어(imperative)의 핵심은 assignment statement로 부터 시작된다.
+            - 가장 큰 장점이자 단점이 **side effect(부수적인 효과) : 자신의 스코프 외부의 변수의 값을 변경**
+    - Arithmetic expression
+        - 연산자 수에 따라 Unary, Binary, Ternary operator로 분류
+        - 연산자 위치에 따라 Prefix, Infix, Postfix operator로 분류
+        - Evaluation order
+            - Operator
+                - Precedence rule : 수학자들의 정의에 의해
+                - (괄호 -> 단일 연산자 -> 승수(power) -> 곱셈 나눗셈 -> 덧셈 뺄셈)
+                - Associativity rule : 기본적으로 왼쪽부터 진행하나, 승수의 경우 오른쪽부터 계산
+            - Operand
+                - 식이 있는 경우, side-effect가 있다면 evaluation 순서에 따라 다름
+                - functional side-effect : 자신의 인자, 또는 전역 변수를 수정하는 함수
+                ```c
+                int a = 5;
+                int fun1() {
+                    a = 17;
+                    return 3;
+                }
+                void main() {
+                    a = a + fun1(); //왼쪽부터 실행하는 경우 8, 오른쪽부터 실행하는 경우 20.
+                }
+                ```
+                - functional side-effect는 표준이 없으므로, Implementer에 따라 다르다.
+        - **Referential transparency**
+            - `result = (fun(a) + b) / (fun(a) - c);`에서 `temp = fun(a);` 이후 `fun(a)`를 `temp`로 바꿔도 동일 한 경우 <u>Referential transparency 존재</u>
+            - <u>함수 `fun`이 **side effect가 없어야 가능**</u>
+            - program을 이해하기 쉽다는 장점
+            - *Pure functional language*는 assignment 없음 -> side-effect 없음 -> *referential transparency 가짐*
+    - Overloaded operator
+        - 하나의 operator가 다양한 용도로 사용되면 operator overloaded 상태
+        - ex) 정수의 덧셈(+)연산과 실수의 덧셈(+)연산
+        - compiler의 error detection 방해와 가독성 저해 문제가 발생 가능
+        - user-defined overloaded operator
+            - 잘 사용하면 가독성 증가
+            - 잘못 사용하면 가독성 저해
+    - Type conversion
+        - narrowing conversion : 데이터 사이즈 大 -> 사이즈 小, *데이터 유실*
+        - widening conversion : 데이터 사이즈 小 -> 사이즈 大, *데이터 보존*
+        - mixed mode : operand가 서로 다른 type을 가진 expression을 mixed mode라고 통칭
+            - type conversion
+                - widening conversion의 경우 ***coercion(Implicit type conversion)***이 발생
+                    - program을 작성하기 편리해짐
+                    - compiler의 error detection 능력 저하(실수 유발 가능성)
+                    - C기반 언어에서는 int보다 작은 type의 덧셈은 int로 coercion 후 계산
+                - Explicit Type conversion (Casting in C) 명시적
+    - Errors in expression
+        - div by zero, overflow -> exception handler로 처리

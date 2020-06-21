@@ -607,3 +607,12 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
         - 구현하기 쉽지만, 사용이 제한적이다.
     - Structure type equivalence = Type의 Name 동일 유무와 상관없이 구조가 동일하면 compatible type이다.
         - 코드 작성이 자유롭지만, 구현이 어렵고 동일하다는 기준이 모호하다.
+
+## 2020.06.21 (Day 10)
+6. Chapter 7. Expression and Assignment statements
+    - Expression : 프로그래밍 언어에서 근본적인 계산 의미를 표현
+        - order of operator & operand evaluation에 대해 이해해야 한다.
+        - 우선순위와 결합법칙
+        - *대부분 피연산자의 계산 우선순위는 지정되어 있지 않으며, 구현에 따라 다름*
+        - 명령형 언어의 본질은 assignment statement로 부터 시작된다.
+            - 

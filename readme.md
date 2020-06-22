@@ -663,3 +663,54 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
                 - Explicit Type conversion (Casting in C) 명시적
     - Errors in expression
         - div by zero, overflow -> exception handler로 처리
+## 2020.06.22 (Day 11)
+6. Chapter 7. (cont.)  
+    - Boolean Expression
+        - JS와 PHP에서는 `==`는 type conversion이후 값을 비교하지만 `===`은 type conversion 없이 비교
+        ```js
+            "7" == 7 // true, "7"은 int형으로 coerced 됨
+            "7" === 7 // false, "==="은 coerce 적용하지 않음
+        ```
+        ```c
+        if(a < b < c) // a < b evaluation 결과가 반환(true 또는 false)되고, 그 값과 c를 비교 
+        ```
+    - Short circuit evaluation
+        - 전체를 evaluation하지 않고, 일부분만 evaluation을 하면 전체 값을 알 수 있는 경우
+        ```c
+        int index = 0;
+        while((index < length) && LIST[index] != value) // short-circuit evaluation 하지 않는 경우 오류 발생
+            index++;
+
+        (a > b) || (b++ / 3); // b의 값은 a <= b인 경우만 변경
+        // short-circuit evaluation 상황에서 side effect가 발생하는 매우 부적절한 상황 
+        ```
+    - Assignment statement 
+        - `=`에 assign과 comparison 2개의 기능을 overloading하는 것은 부적절하므로 `==` 사용
+        - Conditional targets
+            ```pl
+            ($flag ? $total : &subtotal) = 0 // flag가 true이면 total = 0; 아니면 subtotal = 0;
+            ```
+        - Compound assignment operator : `a += b` => `a = a + b`
+        - Unary assignment operator : `a++` or `++a`
+        - Assignment as an Expression : `while((ch = getchar()) != EOF) {...}`
+            - side-effect를 일으킬 수 있어서 코드를 이해하기 힘들게 함
+            - 조심해서 사용해야 함
+            - ex) `a = b + (c = d / b) - 1;`
+        - Multiple assignment : `($first, $second, $third) = (20, 30, 40);`
+        - Assignment in functional language
+            - **순수 함수형 언어에는 assignment가 존재하지 않음**
+            - `val fruit = apples + oranges;`는 val 에 값을 바인딩하는 작업
+            - 위와 같이 바인딩하면 값을 절대 바꿀 수 없음(필요시 re-binding 해야함)
+
+7. Chapter 8. Statement-Level Control structures
+    - Control structure : statement간에 program flow를 control하는 구조 ex) `if-else`, `for`,...
+    - Selection statements
+        - two-way : `if - then` 
+            - nesting selector(중첩 if문)의 경우 else는 가장 가까운 if에 매칭이 된다.
+            - Selector expression : 함수형 언어에서는 if가 expression 역할도 할 수 있음 
+        - multiple-way : `switch`
+            - `switch(`control expr`)`에서 `control expr`은 어떤 type을 허용할 것인지?
+            - 해당하는 case만 실행시킬 것인지, 다음 case에 대한 처리까지 수행할 것인지?
+            - C#와 C/C++에서의 차이점
+                - switch문 내에서 한개의 case(segment라고 칭함)만 실행해야함. 즉, 각 case 마다 unconditional branch(break)로 마무리 해야함
+                - `control expr`이여도 실행이 가능

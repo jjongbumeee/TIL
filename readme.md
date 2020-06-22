@@ -714,3 +714,156 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             - C#와 C/C++에서의 차이점
                 - switch문 내에서 한개의 case(segment라고 칭함)만 실행해야함. 즉, 각 case 마다 unconditional branch(break)로 마무리 해야함
                 - `control expr`이여도 실행이 가능
+            - Scheme의 경우 `COND`를 사용
+            ```s
+            (COND
+                ((> x y) "x is greater than y")
+                ((< x y) "y is greater than x")
+                (ELSE "x and y is equal")
+            )
+            ```
+    - Iterative statements
+        - Counter-Controlled Loop, ex)`for-loop`
+            - loop variable + (initial; terminal; stepsize)
+            - C와 C++의 차이점
+                1. terminal(control) expression이 boolean도 허용
+                1. C++에선 initial expression에 변수 선언도 가능
+            - Java와 C#
+                - terminal(control) expression은 **무조건 boolean만 가능**
+            - functional language에서의 counter-controlled loop
+                - functional language에는 assignment가 존재하지 않음
+                - 따라서 variable이 존재하지 않으므로, recursive call로 구현
+        - Logically-Controlled Loop, ex)`while, do-while`
+            - pretest(loop 수행 전 조건 검사) & posttest(loop 수행 후 조건 검사)
+            - Java는 항상 boolean 타입이여야하며, goto문이 존재하지 않는다.
+        - User-Located loop control - Loop 도중 제어(`continue, break`)
+        - Iteration based on Data structure
+            - C ex) `for (p = root; p != NULL; traverse(p)) {...}`에서 `traverse`는 iterator function
+            - PHP에서는 `current(), next(), reset()`을 제공한다.
+            - C#, Java 5.0에는 `foreach`사용
+        - Uncoditional branching : `goto`
+            - 중복된 반복문을 한번에 `break`하기 위해 사용
+    - **Guarded Commands**
+        - 코드의 안정성을 위해 새로운 방법을 개발
+        - concurrent(동시성)을 가지기 때문에, evaluation 진행순서는 중요하지 않음(바뀌어도 문제가 없음)
+        - Selection Guarded Command
+            ```c
+            if <Boolean expr> -> <statement>
+            [] <Boolean expr> -> <statement> 
+            ...
+            [] <Boolean expr> -> <statement>
+            fi
+            ```
+            - 모든 boolean expr은 parellel하게(순서에 상관없이) evaluation
+            - 하나라도 true가 되는 경우 참인 `statement`중 random하게 하나를 실행
+            - 모두 false인 경우 error 발생
+        - Loop Guarded Command
+            ```c
+            do <Boolean expr> -> <statement>
+            [] <Boolean expr> -> <statement>
+            ...
+            [] <Boolean expr> -> <statement>
+            od
+            ```
+            - 위와 동일하게 모든 expr을 evaluate함
+            - 하나라도 true인 expr이 있다면 그러한 expr 중 random하게 선택하여 실행
+            - 실행 후에는 다시 처음부터 반복
+            - 모든 expr의 evaluation result가 false여야 종료
+
+8. Chapter 9. Subprograms
+    - Function & Procedure
+        - Procedure : return value가 없이, 명령어의 묶음을 뜻하는 단어 (void function)
+        - Function : return value가 존재하여 결과 값이 있는 경우
+        - subprogram = procedure + function
+    - 모든 subprogram은 entry point(진입점)이 1개이다.
+    - calling program은 called subprogram이 종료될때까지 정지해있는다.
+    - subprogram definition & call
+        - subprogram definition : `void f() { ... }`
+        - subprogram call : `f()`
+        - subprogram active : 호출되어 아직 return 하지 않고 함수가 실행중인 상태
+        - Python에선 function definition이 excutable(상황에 맞게 정의가 가능하다.)
+        ```py
+        if a == 1   // a가 1인 경우
+            def fun(...) :
+                ...
+        else    // a가 1이 아닌 경우
+            def fun(...) :
+                ...
+        ```
+        - 미리 컴파일러에게 함수 호출에 필요한 type과 반환형, 함수 이름을 알려주는 것 : function declarations
+        - formal parameter(함수 정의 시) vs. actual parameter(호출 시)
+    - Actual/Formal Parameter corredpondence(매핑)
+        1. positional : 첫번째 actual parameter는 첫번째 formal parameter로...
+            - 안전하고 효율적
+        1. keyword : `void f(int a, int b); f(a = 1, b = 2);`
+            - 임의의 순서를 바꿔도 상관없고, 매핑이 분명함
+            - 개발자가 formal parameter 이름을 전부 알아야 함
+    - Formal parameter default value
+        - python의 default 값
+        ```py
+        def compute_pay(income, exemption = 1, tax_rate)
+        pay = compute_pay(20000.0, tax_rate = 0.15) // exemption = 1이 자동으로 삽입
+        ```
+    - 가변인자 파라미터
+        - 인자의 수가 고정이 아닌, 변할 수 있는 함수 ex)printf
+        - 위의 default value를 지원하지 않는 언어에서는 가변인자를 대부분 지원하지 않음
+        - positional 매핑 방식에서만 가변인자 제공
+        - C#에서는 `params`키워드를 이용하여 간편하게 가변인자를 정의가능(같은 data type에 한해)
+    - Local referencing environments
+        - subprogram의 local variable을 저장공간을 stack-dynamic 또는 static하게 할당
+        - 대부분의 현재 언어는 stack-dynamic한 변수를 만듦
+    - **<u>Parameter passing</u>**
+    ![inout](./image/inout.png)
+        1. In mode
+        1. Out mode
+        1. Inout mode
+    - Implementation model of "Parameter Passing"
+        1. Pass(Call)-by-Value (In Mode)
+            - 단순 복사(값 또는 포인터)를 통해 구현한다
+            - disadvantage
+                - Physical move method : 2중으로 저장공간이 소요된다.(저장공간 낭비, 복사에 이용)
+                - Access Path method : subprogram에서 값을 변경하지 않도록 write protect가 따로 필요하며, indirect addressing으로 인해 속도가 저하된다.
+        1. Pass-by-Result (Out Mode)
+            - Out Mode의 개념을 그대로 구현
+            - formal parameter로 값을 전달하지 않고, call 종료 시 actual parameter로 전달
+            - potential problem
+                - actual parameter로 동일한 변수를 2번 전달하는 경우 (`f(out a, out a);`)문제가 될 수 있음
+                - 또는 `f(out list[sub], sub)`처럼 변수간의 dependency를 가진 채로 호출되는 경우 out mode를 지정할 위치가 명확하지 않음
+        1. Pass-by-Value-Result (Inout Mode) : Pass-by-Value + Pass-by-Result
+            - Pass-by-Value의 단점과 Pass-by-Result의 단점을 가지고 있다.
+        1. Pass(Call)-by-Reference (Inout Mode)
+            - Access path를 전달하는 방식
+            - Passing process가 효율적이다
+            - disadvantage
+                - Slower Access 속도
+                - 원하지 않는 aliases가 발생해 가독성과 신뢰성 저하
+                - ex) `fun(total, total)` , `i = j; fun(list[i], list[j]);`
+        1. Pass-by-Name (Inout Mode)
+            - textual substitution(단순 대체)
+            - C언어에서는 매크로 함수로 이용
+    - Type checking parameters : 일정 부분은 하고 일정 부분은 하지 않음(속도 문제로 인해)
+    - Multidimensional array as Parameter
+        - C언어에서는 `void f(int x[][20]) {...}` , `void f(int **x, int xsize, int ysize)`
+        - Java, C#에서는 배열 자체가 객체임으로 배열만 넘기면 됨 -> more flexible
+    - High-order function(subprogram을 인자로 하는 함수)
+        - subprogram과 Referencing Environment를 전송해야한다.
+            ***1. Shallow binding*** : dynamic-scoped (call-chain상 상위 nonlocal)
+            ***1. Deep binding*** : static-scoped (code상 enclosing environemt의 nonlocal)
+            ***1. Ad hoc binding*** : parameter passing을 야기한 함수의 environment를 이용
+    - Function pointer : calling subprograms indirectly
+        - C / C++
+            - 선언 : `void (*plot)(int x, int y);`
+            - 참조 : `(*plot)(10, 20)` 또는 `plot(10, 20)`
+        - C#
+            - `delegate`는 함수를 담을 수 있는 그릇
+            ```cs
+            public delegate int Change(int x); // delegate 선언
+            static int fun1 (int x) {}; // fun1 선언
+            Change chgfun1 = new Change(fun1); // delegate instantiate
+            chgfun1(12); // fun1(12)와 동일
+            chgfun1 += fun2; // fun2 함수 추가
+            chgfun1(20); // fun1(20)과 fun2(20) 둘 다 호출
+            ```
+    - Overloaded subprogram : 함수 이름은 동일하나, 인자 수 또는 type이 다른 경우
+        - return type 구분여부는 implementation에 따라 다르다
+    - Generic subprogram : 

@@ -993,7 +993,7 @@ Algorithm 13. NP-Completeness
         - 그렇다면 L도 `NP-hard` 이다.
         - 예를 들자면 해밀토니안 사이클을(모든 정점을 거쳐 자기 자신으로 돌아오는 경로가 존재하는가) TSP로 변환
         ![np-hard](./image/NP-hard.png)
-        ![2](image\longestpathNP.png)
+        ![2](./image/longestpathNP.png)
 - 최단거리를 구하는 문제는 `P`문제이지만, 최장경로를 구하는 문제는 `NP`문제이다.
 - NP 이론의 유용성
     - 어떤 문제가 풀기 힘들다는 것을 확인하여, 차선책인 greedy(휴리스틱)알고리즘을 채택한다.

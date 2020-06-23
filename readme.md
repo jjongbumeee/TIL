@@ -866,4 +866,136 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             ```
     - Overloaded subprogram : 함수 이름은 동일하나, 인자 수 또는 type이 다른 경우
         - return type 구분여부는 implementation에 따라 다르다
-    - Generic subprogram : 
+    - Generic subprogram
+        - cf) Overloaded subprogram => *ad hoc polymorphism*이라고 함
+        - Subtype polymorphism
+        - Parametric polymorphism : `template` programming
+        ```cpp
+        template <class Type>
+            Type max(Type first, Type second) {...}
+        ```
+        - User-Defined Overloaded operator : `operator+`, `def __add__(self, second):`
+        > **Closure** : *subprogram + referencing environment*
+        - 임의의 장소에서 실행해도 실행이 될 수 있도록 ref env.를 포함
+        - nested subprogram을 허용하지 않는 static-scoped language는 closure가 필요하지 않다.
+        ```js
+        // this is JAVASCRIPT version
+        function makeAdder(x) {
+            return function(y) {return x + y;} // returning closure(include nonlocal variable)
+        }
+        ...
+        var add10 = makeAdder(10);
+        var add5 = makeAdder(5);
+        document.write("add 10 to 20: " + add10(20));
+        document.write("add 5 to 20: " + add5(20));
+        ```
+        ```cs
+        // this is C# version
+        static Func<int, int> makeAdder(int x) {
+            return delegate(int y) {return x + y;};
+        }
+        ```
+        - Coroutines
+            - 시작점이 여러곳이며, 이를 제어할 수 있는 subprogram
+            - Caller와 Callee가 동등한 관계 : `symmetric control`
+            - coroutine의 call은 `resume` 이라고 함
+            - 첫번째 call에는 처음부터 시작이 되나, 이어지는 call에서는 이전 execution시에 중지됬던 코드부터 시작
+            - caller와 callee가 반복적으로 호출하면 무한히 호출도 가능
+            - `quasi-concurrent execution`을 제공 : 서로 동시에 호출되어 보이지만, 각각의 실행은 독립되어있으며, 동시에 일어나지 않는다.
+            - Time sharing 방식이지만 여러개의 코드가 parellel하게 실행
+## 2020.06.23 (Day 12)
+9. Chapter 10. Implementing Subprograms
+    - *subprogram linkage* : <sup>1</sup>subprogram call and <sup>2</sup>return operations
+    - general semantics of *calls* to a subprogram
+        - parameter passing methods
+        - Stack-dynamic allocation of local variables
+        - Save the execution status of calling program
+        - Transef of control and arrange for the return
+        - If subprogram nesting is supported, access to nonlocal variables
+    - *returns* to a subprogram
+        - out mode parameters must have their values returned
+        - Deallocation of local variables
+        - Restore the execution status
+        - Return control to the caller
+    - Implementing "Simple" subprogram : local & nonlocal variable 없음, nested 허용되지 않음, parameter passing만 존재
+        - Required storage : Status information, parameters, return address, return value for functions, temporaries => 주로 stack segment 사용
+        - Required storage는 2가지로 구분할 수 있음. **actual code part, non-code part(data part)**
+        - excuting subprogram의 non-code part 구조를 *activation record*라고 한다.
+        - *activation record instance*는 이러한 activation record의 실제 구체적인 예이다.
+        - ARI 구성 : Return address, Parameter, Local variables + (Nested를 지원하는 경우 Non-local variables)
+        - 주로 Stack segment에 할당 및 활용(recusion을 지원하기 위해)
+    - "Typical" activation record instance : instance format은 고정, size는 가변
+        - Local variables : size가 가변적인 크기를 가짐, local variables 수에 따라 ARI 사이즈가 달라질수 있음
+        - Parameters : formal parameters, parameter 수에 따라 이 또한 가변 사이즈를 가짐
+        - *Dynamic link* : 해당 instance가 생성되기 이전(Call 시점)에 Stack의 top address(non-code part)가 어디였는지를 저장(ARI deallocation 이후 어디로 가야할지 모르기 때문) == *Environment pointer*
+        - *Return address* : code part가 할당 해제 이후 code-part가 돌아갈 위치를 지정
+    - ***non-code부분(data part)의 ARI 그리기***
+        - ***Return address, Dynamic link, parameters, local variables 순으로 그리기***
+    - *Dynamic Chain* : Stack의 dynamic link를 따라서 생성되는 subprogram 호출 순서 (call-chain이라고도 함)
+    - Local offset : local variable은 EP의 시작 주소로 부터 얼마나 떨어져 있는지로 접근 가능. 떨어져 있는 거리를 local offset이라고 함
+    - *recursion이 있다면 **functional value** 항목을 ARI format에 추가하여 값을 계산*
+    - Nested subprogram을 허용하는 언어에서의 ARI(nonlocal variable 참조)
+        1. static scope, dynamic scope rule에 따라 해당하는 ARI 찾기
+        1. ARI내 에서 해당하는 variable의 offset을 찾기
+        - Static scoping
+            - offset은 code를 보면 자신의 enclosing subprogram을 보면 찾기 쉬움
+            - 문제는 activation record를 찾는 것
+                - `static link` field를 activation record format에 추가
+                - 자신을 감싸고 있는 상위 subprogram을 가르키도록 설정
+                - 이러한 static link의 연속을 `static chain`이라고 함. static chain 을 탐색하면 nonlocal variable을 찾을 수 있음
+                - `Static depth` 또는 chain offset은 static scope 관점에서 몇 번 static link를 따라가야 해당 nonlocal variable을 찾을 수 있는지에 대한 개념
+            - 따라서 static scope에서는 `(Static depth, local offset)`으로 nonlocal variable을 참조
+                - ex) `(2, 3)`은 static link을 2번 따라간 ARI의 3번째 항목이 참조하고 있는 variable이다.
+            - example) p.29 참조  
+            **<u>※ Dynamic link는 ARI stack의 top주소, Static link는 ARI의 begining 주소를 가리킴</u>**
+            - Static link를 찾는 방법
+                - Dynamic Chain 전체를 살펴보는 탐색
+                - nonlocal variable을 참조하는 것과 같이 static depth를 미리 계산하여 참조하는 방식 ~~너무 자세히 알 필요없다~~
+            - static chain을 이용하는 방식은 느리다 -> C에서는 nested subprogram 지원안함
+        - Dynamic scoping
+            - Deep Access : dynamic link를 따라가며 해당하는 nonlocal variable이 존재하는 지 확인
+                - Chain의 길이가 길어, 시간이 너무 오래 걸릴 수 있음
+                - ARI에 변수의 값 뿐만 아니라 이름도 기억하고 있어야 하므로 추가적인 공간이 필요하다.
+            - Shallow Access : 변수 별 Stack을 유지해, stack의 top으로 해당 변수가 마지막으로 선언된 곳이 어딘지 찾아냄
+                - 속도는 빠르지만, 너무나 큰 용량을 사용
+                - 구현에 어려움이 있음
+        - blocks : 이름이 없는 subprogram
+            - implementation 방식이 subprogram을 생성하는 것과 똑같지만 이름이 없다.
+            - 그러나, ARI을 만들거나 해제하는데 드는 오버헤드가 크기 때문에 굳이 권장하지 않는다.
+            - 프로그래머의 가독성은 증가한다.  
+
+Algorithm 13. NP-Completeness
+- 현실적인 시간 : 다항식 시간(n의 다항식으로 표시되는)
+- 비다항식 시간의 예 : 2<sup>n</sup>, n!
+- YES/No 문제의 반복으로 최적화 문제를 대부분 해결할 수 있으므로 NP-Complete 이론에선 YES/NO를 중점으로 다룸
+- 다항식 시간 변환(Polynomial time reduction)
+    - 답이 항상 동일한(T->T, F->F) 다른 문제로 바꾸는 데 걸리는 시간이 다항식 시간
+    - 즉, 둘 중 쉬운 문제를 해결하면 다른 문제도 쉽게 해결이 가능하다.
+    - 쉬운 문제를 해결 + 다항식 시간 변환 => 원래 풀고자 했던 문제 해결
+        1. 문제의 답은 항상 동일하게 나와야한다
+        1. 다른 문제로 변환하는데 다항식 시간이 걸린다.
+    - 위 2가지 조건을 만족하면 다항식 시간 변환이 가능하다.
+- P / NP
+    - `P` : *Deterministic* turing machine에서 **다항식 시간에 풀리는** 문제 집합
+    - `NP` : *Non-deterministic* turing machine에서 **다항식 시간에 풀리는** 문제 집합
+        - Yes에 해당하는 해를 제공했을때, 이것이 Yes가 맞는 지 검증하는데 걸리는 시간이 다항식 시간이라면 `NP 문제`
+    - `P`의 문제는 모두 Non-deterministic turing machine에서는 다항식 시간안에 해결 **(P => NP)**
+    - 그러나 NP의 문제가 P가 되는지는 밝혀지지 않음 **(NP !=> P)**
+- `NP-complete` / `NP-hard`
+    - `NP-hard` : 모든 NP문제가 문제 L로 다항식 시간에 변환가능하면 L은 NP-hard
+    - `NP-complete`
+        - L이 NP이고,
+        - L이 NP-hard이면 L은 NP-complete이다.
+    - `NP-complete`는 `NP-hard`의 포함관계이다.(NP-complete => NP-hard)
+    - 그러나 대부분의 문제가 NP라는 것을 증명하는 것은 어렵지 않기 때문에 `NP-hard`에 집중
+    - 다른 `NP-hard`문제를 이용하는 방법으로도 `NP-hard` 정리 가능
+        - 알려진 임의의 `NP-hard` 문제 A를 L로 다항식 시간에 변환이 가능하다
+        - 그렇다면 L도 `NP-hard` 이다.
+        - 예를 들자면 해밀토니안 사이클을(모든 정점을 거쳐 자기 자신으로 돌아오는 경로가 존재하는가) TSP로 변환
+        ![np-hard](./image/NP-hard.png)
+        ![2](image\longestpathNP.png)
+- 최단거리를 구하는 문제는 `P`문제이지만, 최장경로를 구하는 문제는 `NP`문제이다.
+- NP 이론의 유용성
+    - 어떤 문제가 풀기 힘들다는 것을 확인하여, 차선책인 greedy(휴리스틱)알고리즘을 채택한다.
+- NP와 NP-complete, hard의 관계
+![relation](./image/realationPNP.png)

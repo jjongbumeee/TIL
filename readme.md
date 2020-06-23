@@ -713,7 +713,7 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             - 해당하는 case만 실행시킬 것인지, 다음 case에 대한 처리까지 수행할 것인지?
             - C#와 C/C++에서의 차이점
                 - switch문 내에서 한개의 case(segment라고 칭함)만 실행해야함. 즉, 각 case 마다 unconditional branch(break)로 마무리 해야함
-                - `control expr`이여도 실행이 가능
+                - `control expr`이 string이여도 실행이 가능
             - Scheme의 경우 `COND`를 사용
             ```s
             (COND
@@ -792,7 +792,7 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
         ```
         - 미리 컴파일러에게 함수 호출에 필요한 type과 반환형, 함수 이름을 알려주는 것 : function declarations
         - formal parameter(함수 정의 시) vs. actual parameter(호출 시)
-    - Actual/Formal Parameter corredpondence(매핑)
+    - Actual/Formal Parameter corresdpondence(매핑)
         1. positional : 첫번째 actual parameter는 첫번째 formal parameter로...
             - 안전하고 효율적
         1. keyword : `void f(int a, int b); f(a = 1, b = 2);`
@@ -846,10 +846,10 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
         - C언어에서는 `void f(int x[][20]) {...}` , `void f(int **x, int xsize, int ysize)`
         - Java, C#에서는 배열 자체가 객체임으로 배열만 넘기면 됨 -> more flexible
     - High-order function(subprogram을 인자로 하는 함수)
-        - subprogram과 Referencing Environment를 전송해야한다.
-            ***1. Shallow binding*** : dynamic-scoped (call-chain상 상위 nonlocal)
-            ***1. Deep binding*** : static-scoped (code상 enclosing environemt의 nonlocal)
-            ***1. Ad hoc binding*** : parameter passing을 야기한 함수의 environment를 이용
+        - subprogram과 Referencing Environment를 전송해야한다.  
+            1. ***Shallow binding*** : dynamic-scoped (call-chain상 상위 nonlocal)  
+            1. ***Deep binding*** : static-scoped (code상 enclosing environemt의 nonlocal)  
+            1. ***Ad hoc binding*** : parameter passing을 야기한 함수의 environment를 이용  
     - Function pointer : calling subprograms indirectly
         - C / C++
             - 선언 : `void (*plot)(int x, int y);`

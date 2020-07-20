@@ -999,3 +999,123 @@ Algorithm 13. NP-Completeness
     - 어떤 문제가 풀기 힘들다는 것을 확인하여, 차선책인 greedy(휴리스틱)알고리즘을 채택한다.
 - NP와 NP-complete, hard의 관계
 ![relation](./image/realationPNP.png)
+
+## 2020.06.24 (Day 13)
+Algorithm 10. Graph algorithm
+- 그래프 표현 방법
+    - 인접 행렬 : N*N 행렬로 edge의 가중치 저장 -> 가장 빠르나, 공간 낭비
+    - 인접 리스트 : 링크드 리스트 형태로 간선에 대한 정보를 저장 -> 가장 공간 효율적이나
+    - 인접 배열 
+        -각 정점마다 배열을 할당하여 인접 리스트의 링크부분의 공간을 절약하며 상대적으로 빠르게 검색이 가능
+        - 각 정점의 긴 하나의 배열로도 저장 가능(각 정점의 인접 정점 수 저장 시)
+        - 그래프의 변화가 없어야 효율적
+- 그래프의 모든 정점 방문(traversal)
+    - DFS(Depth-First-Search) => `Θ(|V| + |E|)`
+        ```cpp
+        DFS(G) {
+            for each v ∈ V
+                visied[v] = NO;
+            for each v ∈ V
+                if(visited[v] = NO) then aDFS(v); // 모든 정점이 방문이 안될 경우가 있기 때문에, 
+                // BFS도 모든 정점 방문이  안될 경우 for문으로 전체 방문
+        }
+        aDFS(v) {
+            visited[v] = YES;
+            for each x ∈ L(v)
+                if(visited[x] = NO) then aDFS(x);
+        }
+        ```
+    - BFS(Breadth-First-Search)
+        ```cpp
+        BFS(G, s) {
+            for each v ∈ V - {s}
+                visited[v] = NO;
+            visited[s] = YES;
+            enqueue(Q, s);
+            while(Q ≠ empty) {
+                u = dequeue(Q);
+                for each v ∈ L(u)
+                    if(visited[v] = NO) {
+                        visited[u] = YES;
+                        enqueue(Q, v);
+                    }
+            }
+        }
+        ```
+- 스패닝 트리(Spanning tree)
+    - 그래프에서 포함되는 정점과 간선들만 이용해서 만든 트리(싸이클이 없는 연결 그래프)
+    - 최소 스패닝 트리(MST) : 스패닝 트리 중 간선의 가중치의 합이 최소인 트리
+- 프림 알고리즘(Prim's algorithm)
+    - 현재 MST 생성이 완료된 정점 집합 S와 V-S 집합 사이의 최소 가중치 간선을 찾아 해당 정점을 S에 포함
+    - 포함된 정점에서 인접한 정점들에 대해(V-S에 포함되는 경우) 이완을 실시
+    ![primWithMinheap](./image/minheap.png)
+    - 수행시간 분석
+        - Edge를 중심으로 보면 모든 edge는 2번씩 확인, 또한 heap을 구성하고 업데이트 하는데 필요한 시간 O(log|V|)
+        - 따라서 O(2|E|log|V|) => O(|E|log|V|)
+    - Spannig tree를 구하기 위해선
+        - 이완될 때마다 이완시킨 정점(parent)에 대한 데이터를 보관
+        - 마지막에 출력
+- 크루스칼 알고리즘(kruscal algorithm)
+    - Union-find를 이용해 모든 정점을 각자의 집합으로 set한다
+    - 간선은 가중치가 작은 순부터 오름차순으로 정렬한다
+    - 최소 가중치 간선을 pop하여, 두개의 간선의 정점이 같은 집합에 있는지 확인한다.(사이클이 형성되는지)
+    - 다른 집합에 있다면 두 집합을 하나로 합친다.
+    - 간선이 vertex-1개 보다 작은 동안(트리가 되기 전에) 반복
+- 위상 정렬 (topological sort)
+    - cycle이 없는 유향 그래프에서(DAG) partial ordered set을 순서대로 정렬하기 위해 사용
+    - 알고리즘 1 : 진입간선이 없는 정점을 선택하는 알고리즘(|V|+|E|)
+    - 알고리즘 2 : DFS방문 순서의 역순으로 출력하는 알고리즘(|V|+|E|)
+- 최단 경로(Shortest path)
+    - 간선 가중치의 합이 음수인 싸이클이 없어야 문제 정의 가능
+    - V와 U사이의 최단 경로를 구하기 위해선 V부터 U사이에 존재할 수 있는 모든 정점과의 최단 거리를 알아야 한다.
+    - 따라서, 특정 정점 U부터 V의 최단경로만을 구하는 알고리즘은 의미가 없다.
+    - 단일 시작점 최단경로
+        - 다익스트라 알고리즘 : 음의 가중치를 허용하지 않음
+        - 벨만-포드 알고리즘 : 음의 가중치를 허용
+        - 싸이클이 없는 그래프(DAG)의 최단 경로 : 조금 더 효율적인 방법
+    - 모든 쌍 최단 경로
+        - 플로이드-워샬 알고리즘
+
+    - 다익스트라 알고리즘
+        - 프림 알고리즘과 거의 유사한 방식으로 동작
+        - 차이점은 이완 조건에 기존 u까지의 최단 경로를 합하여 비교하는 부분
+        - 프림의 MST 확인하는 것과 동일하게 prev(parent) 값을 두고 마지막에 출력하면 최단 경로를 확인할 수 있음
+        - 수행시간도 프림과 동일
+    - 벨만-포드 알고리즘
+        - |V|-1회 동작을 반복 수행함
+        - 1회 수행할 때마다 시작 정점 r로부터 1회의 간선을 거쳐 갈 수 있는 정점의 최단거리를 보장
+        - 음의 간선도 계산이 가능함
+        - |V|회 이상 반복하여도 이완이 계산 발생하는 경우 그래프에 음의 사이클이 존재. 
+        ```cpp
+        if (d[u] + w[u, v] < d[v]) {
+            d[v] = d[u] + w[u, v]
+            prev[v] = u;
+        }
+        ```
+    - 플로이드-워샬 알고리즘
+        - d<sub>ij</sub><sup>k</sup> : {v<sub>1</sub>, v<sub>2</sub>, v<sub>3</sub>, ... , v<sub>k</sub>} 에 속하는 정점들만 거쳐, v<sub>i</sub>에서 v<sub>j</sub>로 가는 최단경로 길이
+        - d<sub>ij</sub><sup>k</sup> = min{d<sub>ij</sub><sup>k-1</sup>, d<sub>ik</sub><sup>k-1</sup> + d<sub>kj</sub><sup>k-1</sup>}
+        - k 정점을 포함하지 않거나, 포함하는 경로 중 최단거리
+    ```cpp
+    FloydWarshall(G) {
+        for i = 1 to n
+            for j = 1 to n
+                d0ij = wij;
+        for k = 1 to n
+            for i = 1 to n
+                for j = 1 to n
+                    dkij = min{d<sub>ij</sub><sup>k-1</sup>, d<sub>ik</sub><sup>k-1</sup> + d<sub>kj</sub><sup>k-1</sup>} //위의 min 참조
+    }
+    ```
+    - DAG에서 최단 경로 구하기
+        - 그래프의 모든 정점의 최단경로를 무한으로 저장해놓고,
+        - 그래프를 위상정렬하여 위상 정렬 순서대로 이완을 진행
+        - 시작 정점으로부터 최단경로의 길이를 구할 수 있게됨
+        - 수행시간은 위상정렬이 주요함(|V|+|E|)
+    - 강연결요소 구하기
+        - 강연결요소 : 특정 정점 쌍 사이에 양방향으로 경로가 존재하면 강연결 요소
+        - 알고리즘
+            1. 그래프 G에서 DFS를 수행하여 정점v의 완료시간 f[v]를 계산한다.
+            1. G의 모든 간선의 방향을 반대로 하여 G<sup>R</sup>을 만든다.
+            1. DFS(G<sup>R</sup>)을 다시 수행한다
+            1. DFS(G<sup>R</sup>)에서 만들어 분리된 트리들을 각 강연결요소로 반환한다.

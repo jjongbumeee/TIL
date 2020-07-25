@@ -1175,3 +1175,45 @@ Algorithm 10. Graph algorithm
         - 비동기 작업이 여러 번 중복될 경우(DB의 중복 접근 등), 비동기 작업 함수가 굉장히 복잡해짐
         - 함수 내의 함수가 반복되는 형태
         - 비동기 프로그래밍 특성상 디버깅도 힘듦
+        - 따라서 ES6부터는 Promise 객체 사용 (polyfill 등의 라이브러리 없이는 동작안함)
+        - 따라서 IE에서는 사용할 수 없음
+        ```js
+        // 비동기 함수 작성
+        function 학생정보_조회(학생_학번) {
+            return new Promise(function (resolve, reject) {
+                ajax(baseUrl + "/student-info/" + 학생_학번, // 수행할 비동기 작업
+                function(response) {    // 콜백 함수
+                    resolve(response);
+                }
+                );
+            });
+        }
+        // 호출
+        학생정보_조회("12345")
+        .then(function (학생_정보) {
+            //do something
+            return 고교_DB_주소_조회(학생_주민번호, 고교명)
+        })
+        .then(function(학생_주민번호_AND_고교_DB_주소) {
+            return 고교재학시_수강수업_조회(
+                학생_주민번호_AND_고교_DB_주소[0],
+                학생_주민번호_AND_고교_DB_주소[1]
+            )
+        })
+        .then(function(...)) {
+            //...
+        }
+        ```  
+
+        - 위와 같이 체이닝 방식으로 연속된 비동기 작업을 처리
+        - ES8에서는 `async/await`가 추가되어 더욱 쉽게 호출 
+        ```js
+        async function 고3_수학교사_찾기(학생_학번) { //async는 비동기 함수임을 의미
+            let 학생_정보 = await 학생정보_조회(학생_학번);
+            // await 사용 시 콜백이 불려서 반환될 때까지 대기 후 반환 시 다음 실행
+            let 고고_DB_주소
+            = await 고교_DB_주소_조회(학생_정보["고교명"]);
+            //...
+            console.log(담당교사);
+        }
+        ```

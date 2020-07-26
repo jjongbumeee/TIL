@@ -31,6 +31,7 @@ br대신 space 2칸으로 활용가능
 "[링크 표시될 제목] (링크)"
 코드의 경우 ```로 코드 종류 명시 후 감싸주기  
 인용문의 경우 > 이용
+***
 ## 2020.06.02 (Day 2)
 - Dijkstra Algorithm  
 오랜만에 다익스트라 알고리즘 문제를 접하게 되었다. 작년에는 한참 종만북을 보며 연습했었는데, 아무런 공부없이 문제를 맞딱드리게 되니 머릿속이 하얘졌다.  
@@ -90,7 +91,7 @@ int main()
     }
 }
  ```
-
+***
  - 컴파일러  
  C로 작성된 first, follow 코드는 찾았으나,  
   이를 C++로 수정해야하고 파일 입출력도 넣어야하지만 하지 못했다....  
@@ -120,6 +121,7 @@ SLR parser를 구현하기 위해서는 앞으로 ``CLOSURE``와 ``GOTO`` 함수
 현재 파서는 인덱스 구조로 되어있기 때문에 복잡한 문법은 처리하지 못한다. 특히나 터미널 심볼이 두 문자 이상으로 구성되어 있는 경우 처리하지 못하기 때문에 문제가 크다.  
 앞으로 해결해야할 문제이다.
 
+***
 ## 2020.06.05 (Day 4)
 - OS / Main memory   
 Memory allocation method에 대해 알아보았다. 그 중 아래 3가지에 대해 자세히 알아보았다.  
@@ -162,7 +164,7 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
 >4. (1, 1) recently used and modified – probably will be used again soon and need to write out before replacement
 
 위 작업을 통해 circular queue를 이용해 문제를 해결한다.
-
+***
 ## 2020.06.07 (Day 5)
 - Data Communication 정리  
     1. Network Models  
@@ -312,7 +314,7 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             1. AM : total required b/w = audio signal * 2
             2. FM : total required b/w = audio signal * 10
         
-
+***
 ## 2020.06.18 (Day 7) : PL summary
 1. chapter 1 Preliminaries
     - Programming Domains
@@ -963,7 +965,7 @@ Enhanced Second-Chance Algorithm이 최신의 기술이다.
             - implementation 방식이 subprogram을 생성하는 것과 똑같지만 이름이 없다.
             - 그러나, ARI을 만들거나 해제하는데 드는 오버헤드가 크기 때문에 굳이 권장하지 않는다.
             - 프로그래머의 가독성은 증가한다.  
-
+***
 Algorithm 13. NP-Completeness
 - 현실적인 시간 : 다항식 시간(n의 다항식으로 표시되는)
 - 비다항식 시간의 예 : 2<sup>n</sup>, n!
@@ -1119,6 +1121,7 @@ Algorithm 10. Graph algorithm
             1. G의 모든 간선의 방향을 반대로 하여 G<sup>R</sup>을 만든다.
             1. DFS(G<sup>R</sup>)을 다시 수행한다
             1. DFS(G<sup>R</sup>)에서 만들어 분리된 트리들을 각 강연결요소로 반환한다.
+***
 
 ## 2020.07.24  
 얄팍한 코딩사전 강의 내용 정리(컴퓨터공학)
